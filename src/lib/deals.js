@@ -16,7 +16,7 @@ export function sizedImage(src, px) {
   return src;
 }
 
-function fromApi(d, now) {
+export function fromApi(d, now) {
   const medium = d.image ? `${THUMBS}/medium/${d.image}` : '';
   const small = d.image ? `${THUMBS}/small/${d.image}` : '';
   return {
@@ -43,22 +43,78 @@ function fromApi(d, now) {
   };
 }
 
+async function apiGet(params) {
+  const res = await fetch(`${API}?${new URLSearchParams(params)}`, {
+    headers: { authorization: 'Bearer noidtoken', 'content-type': 'application/json' },
+    signal: AbortSignal.timeout(15000),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const body = await res.json();
+  if (!body.status || !Array.isArray(body.data)) throw new Error(body.msg || 'bad response');
+  return body.data;
+}
+
 // Fetched once at build time; the static page shows whatever was live then.
 // Pass `tag` (e.g. 'popular') for a tagged list, otherwise `sort` (e.g. 'new').
 export async function getDeals({ sort = 'new', tag, perPage = 24, page = 1 } = {}) {
-  const qs = new URLSearchParams({ act: 'gdeals', ...(tag ? { tag } : { st: sort }), ppg: String(perPage), page: String(page), lt: '' });
   try {
-    const res = await fetch(`${API}?${qs}`, {
-      headers: { authorization: 'Bearer noidtoken', 'content-type': 'application/json' },
-      signal: AbortSignal.timeout(15000),
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const body = await res.json();
-    if (!body.status || !Array.isArray(body.data)) throw new Error(body.msg || 'bad response');
+    const data = await apiGet({ act: 'gdeals', ...(tag ? { tag } : { st: sort }), ppg: String(perPage), page: String(page), lt: '' });
     const now = Date.now();
-    return body.data.map((d) => fromApi(d, now));
+    return data.map((d) => fromApi(d, now));
   } catch (err) {
     console.warn(`[deals] API fetch failed (${err.message}); using sample data`);
     return sample;
+  }
+}
+
+// Labels the live site shows above each activity entry. Only "newdeal" and
+// "populardeal" have been seen in the feed so far; the rest are best guesses.
+const LIVE_LABELS = {
+  newdeal: 'new deal posted',
+  populardeal: 'deal populared',
+  hotdeal: 'deal turned hot',
+  comment: 'new comment',
+  like: 'deal liked',
+  user: 'new user joined',
+};
+const LIVE_TYPES = Object.keys(LIVE_LABELS).join('|');
+
+// Activity feed for /live. Each API page holds 10 entries; the next page is
+// requested with lt=<created of the last entry>, the same way the live site does.
+export async function getLive({ pages = 3 } = {}) {
+  const entries = [];
+  let lt = '';
+  try {
+    for (let i = 0; i < pages; i++) {
+      const data = await apiGet({ st: LIVE_TYPES, act: 'glive', lt });
+      if (!data.length) break;
+      entries.push(...data);
+      lt = data[data.length - 1].created;
+    }
+  } catch (err) {
+    console.warn(`[deals] live feed fetch failed (${err.message})`);
+  }
+  const now = Date.now();
+  const live = entries
+    .filter((e) => e.info && e.info.title)
+    .map((e) => ({
+      id: e.id,
+      label: LIVE_LABELS[e.type] ?? e.type,
+      minsAgo: Math.max(1, Math.round((now - parseIst(e.created)) / 60000)),
+      deal: fromApi(e.info, now),
+    }));
+  if (live.length) return live;
+  // Feed unavailable: show the newest deals as "new deal posted" entries instead.
+  return (await getDeals({ sort: 'new', perPage: 24 })).map((d) => ({ id: d.id, label: LIVE_LABELS.newdeal, minsAgo: d.minsAgo, deal: d }));
+}
+
+// Recently searched terms, shown as "Recently Browsed" on /live.
+export async function getRecentSearches({ count = 40 } = {}) {
+  try {
+    const data = await apiGet({ act: 'getrsearch', ppg: String(count) });
+    return [...new Set(data.map((r) => (r.text || '').trim().toLowerCase()).filter(Boolean))];
+  } catch (err) {
+    console.warn(`[deals] recent searches fetch failed (${err.message})`);
+    return [];
   }
 }

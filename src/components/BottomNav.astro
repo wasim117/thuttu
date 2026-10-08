@@ -5,7 +5,9 @@ import Icon from './Icon.astro';
 const items = [
   ['New', 'home'], ['Hot', 'fire'], ['Popular', 'megaphone'], ['Comments', 'forum'], ['More', 'more'],
 ];
-const { active = 'New' } = Astro.props;
+const { active: page = 'New' } = Astro.props;
+// Pages without their own button (e.g. Live) sit under More, as on the live site.
+const active = items.some(([label]) => label === page) ? page : 'More';
 ---
 <nav class="bottom">
   {items.map(([label, icon]) => (

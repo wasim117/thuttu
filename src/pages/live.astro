@@ -1,0 +1,34 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import BottomNav from '../components/BottomNav.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import LiveItem from '../components/LiveItem.astro';
+import Sidebar from '../components/Sidebar.astro';
+import site from '../data/site.json';
+import discover from '../data/discover.json';
+import { getLive, getRecentSearches } from '../lib/deals.js';
+
+const [entries, searches] = await Promise.all([getLive({ pages: 3 }), getRecentSearches()]);
+---
+<Base title={`Live Deal, Offers Updates from Amazon, Flipkart - ${site.name}`}>
+  <Header active="Live" />
+  <div class="page">
+    <main class="main">
+      <SectionHeader title="Live Updates" toggle={false} />
+      <div class="feed">
+        {entries.map((e) => (
+          <div class="entry card"><LiveItem deal={e.deal} label={e.label} minsAgo={e.minsAgo} /></div>
+        ))}
+      </div>
+    </main>
+    <Sidebar links={discover.sidebar} searches={searches} />
+  </div>
+  <BottomNav active="Live" />
+</Base>
+
+<style>
+  .feed { display: grid; gap: 10px; grid-template-columns: repeat(var(--list-n), minmax(0, 1fr)); }
+  .entry { padding: 0 10px 6px; }
+  .entry :global(small) { margin-left: -10px; background: var(--bg-color); }
+</style>

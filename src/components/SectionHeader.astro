@@ -1,14 +1,16 @@
 ---
 import Icon from './Icon.astro';
-const { title, pane, notify = false } = Astro.props;
+const { title, pane, notify = false, toggle = true } = Astro.props;
 ---
 <div class="sh card">
   <h1>{title}</h1>
   {notify && <a class="notify" href="#">NOTIFY</a>}
-  <button class="view-toggle" data-pane={pane} aria-label="Switch between list and grid view" title="Switch view">
-    <span class="to-grid"><Icon name="viewGrid" /></span>
-    <span class="to-list"><Icon name="viewList" /></span>
-  </button>
+  {toggle && (
+    <button class="view-toggle" data-pane={pane} aria-label="Switch between list and grid view" title="Switch view">
+      <span class="to-grid"><Icon name="viewGrid" /></span>
+      <span class="to-list"><Icon name="viewList" /></span>
+    </button>
+  )}
 </div>
 
 <style>
