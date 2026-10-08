@@ -1,7 +1,9 @@
 import sample from '../data/deals.json';
 
-const API = 'https://api.thuttu.com/';
-const THUMBS = 'https://api.thuttu.com/thumbs';
+// Set in GitHub (Settings → Secrets and variables → Actions) or a local .env file.
+// Read only at build time, so the values are not shipped as config to the browser.
+const API = process.env.API_URL || import.meta.env.API_URL || '';
+const THUMBS = (process.env.THUMBS || import.meta.env.THUMBS || '').replace(/\/$/, '');
 
 // API dates are IST without a zone, e.g. "2026-10-09 01:27:04".
 const parseIst = (s) => new Date(s.replace(' ', 'T') + '+05:30');
@@ -45,6 +47,7 @@ export function fromApi(d, now) {
 }
 
 async function apiGet(params) {
+  if (!API) throw new Error('API_URL is not set');
   const res = await fetch(`${API}?${new URLSearchParams(params)}`, {
     headers: { authorization: 'Bearer noidtoken', 'content-type': 'application/json' },
     signal: AbortSignal.timeout(15000),

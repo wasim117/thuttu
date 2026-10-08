@@ -23,6 +23,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: withastro/action@v3
+        env:
+          # Works whether these are saved as repository secrets or variables.
+          API_URL: ${{ secrets.API_URL || vars.API_URL }}
+          THUMBS: ${{ secrets.THUMBS || vars.THUMBS }}
 
   deploy:
     needs: build
