@@ -8,9 +8,10 @@ import DealCard from '../components/DealCard.astro';
 import DiscoverTags from '../components/DiscoverTags.astro';
 import Sidebar from '../components/Sidebar.astro';
 import site from '../data/site.json';
-import deals from '../data/deals.json';
+import { getDeals } from '../lib/deals.js';
 import discover from '../data/discover.json';
 
+const deals = await getDeals({ sort: 'new', perPage: 24 });
 // Pinned deals first, then newest.
 const sorted = [...deals].sort((a, b) => Number(b.pinned) - Number(a.pinned) || a.minsAgo - b.minsAgo);
 // A "Discover more" row after every 4 deals (and after the first 4 only on small screens).

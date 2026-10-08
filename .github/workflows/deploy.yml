@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Rebuild regularly so the home page picks up new deals from the API.
+  schedule:
+    - cron: '*/30 * * * *'
 
 permissions:
   contents: read

@@ -7,7 +7,7 @@ const { deal } = Astro.props;
 <article class="deal card">
   <a class="thumb" href={deal.url} rel="nofollow noopener">
     {deal.pinned && <span class="pinned">PINNED</span>}
-    <img src={url(`${deal.image}`)} alt="" width="80" height="62" loading="lazy" />
+    <img src={url(deal.image)} alt="" width="80" height="62" loading="lazy" />
     <span class="get"><Icon name="cart" /> Get Deal</span>
   </a>
   <div class="body">

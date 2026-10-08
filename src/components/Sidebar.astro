@@ -21,7 +21,7 @@ const { links, updates } = Astro.props;
       <li>
         <small>new deal posted {ago(d.minsAgo)} ago</small>
         <a class="row" href={d.url} rel="nofollow noopener">
-          <img src={url(`${d.image}`)} alt="" width="56" height="44" loading="lazy" />
+          <img src={url(d.thumb ?? d.image)} alt="" width="56" height="44" loading="lazy" />
           <div>
             <p>{d.title}</p>
             <div class="nums">
