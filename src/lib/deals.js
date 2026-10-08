@@ -33,7 +33,8 @@ export function fromApi(d, now) {
     imageFallback: d.origimage ? medium : '',
     thumb: sizedImage(d.origimage, 128) || small,
     thumbFallback: d.origimage ? small : '',
-    url: d.plink || d.rawlink,
+    // Plain retailer link (no affiliate redirect); fall back to the tracked link if missing.
+    url: d.rawlink || d.plink,
     likes: d.nlikes ?? 0,
     views: d.nviews ?? 0,
     comments: d.ncomments ?? 0,
