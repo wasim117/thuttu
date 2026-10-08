@@ -1,9 +1,8 @@
 import sample from '../data/deals.json';
+import { apiGet, fetchDeals, fetchLive } from './api.js';
+import { pickLink } from './links.js';
 
-// Set in GitHub (Settings → Secrets and variables → Actions) or a local .env file.
-// Read only at build time, so the values are not shipped as config to the browser.
-const API = process.env.API_URL || import.meta.env.API_URL || '';
-const THUMBS = (process.env.THUMBS || import.meta.env.THUMBS || '').replace(/\/$/, '');
+const THUMBS = (process.env.THUMBS || import.meta.env?.THUMBS || '').replace(/\/$/, '');
 
 // API dates are IST without a zone, e.g. "2026-10-09 01:27:04".
 const parseIst = (s) => new Date(s.replace(' ', 'T') + '+05:30');
@@ -35,8 +34,8 @@ export function fromApi(d, now) {
     imageFallback: d.origimage ? medium : '',
     thumb: sizedImage(d.origimage, 128) || small,
     thumbFallback: d.origimage ? small : '',
-    // Plain retailer link (no affiliate redirect); fall back to the tracked link if missing.
-    url: d.rawlink || d.plink,
+    // rawlink, affiliate link or plink, depending on LINK_MODE (see links.js).
+    url: pickLink(d),
     likes: d.nlikes ?? 0,
     views: d.nviews ?? 0,
     comments: d.ncomments ?? 0,
@@ -46,23 +45,11 @@ export function fromApi(d, now) {
   };
 }
 
-async function apiGet(params) {
-  if (!API) throw new Error('API_URL is not set');
-  const res = await fetch(`${API}?${new URLSearchParams(params)}`, {
-    headers: { authorization: 'Bearer noidtoken', 'content-type': 'application/json' },
-    signal: AbortSignal.timeout(15000),
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  const body = await res.json();
-  if (!body.status || !Array.isArray(body.data)) throw new Error(body.msg || 'bad response');
-  return body.data;
-}
-
 // Fetched once at build time; the static page shows whatever was live then.
 // Pass `tag` (e.g. 'popular') for a tagged list, otherwise `sort` (e.g. 'new').
 export async function getDeals({ sort = 'new', tag, perPage = 24, page = 1 } = {}) {
   try {
-    const data = await apiGet({ act: 'gdeals', ...(tag ? { tag } : { st: sort }), ppg: String(perPage), page: String(page), lt: '' });
+    const data = await fetchDeals({ sort, tag, perPage, page });
     const now = Date.now();
     return data.map((d) => fromApi(d, now));
   } catch (err) {
@@ -81,20 +68,12 @@ const LIVE_LABELS = {
   like: 'deal liked',
   user: 'new user joined',
 };
-const LIVE_TYPES = Object.keys(LIVE_LABELS).join('|');
 
-// Activity feed for /live. Each API page holds 10 entries; the next page is
-// requested with lt=<created of the last entry>, the same way the live site does.
+// Activity feed for /live (3 pages of 10 entries).
 export async function getLive({ pages = 3 } = {}) {
-  const entries = [];
-  let lt = '';
+  let entries = [];
   try {
-    for (let i = 0; i < pages; i++) {
-      const data = await apiGet({ st: LIVE_TYPES, act: 'glive', lt });
-      if (!data.length) break;
-      entries.push(...data);
-      lt = data[data.length - 1].created;
-    }
+    entries = await fetchLive({ pages });
   } catch (err) {
     console.warn(`[deals] live feed fetch failed (${err.message})`);
   }

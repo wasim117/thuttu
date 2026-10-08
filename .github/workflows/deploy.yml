@@ -22,11 +22,50 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: withastro/action@v3
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Converted affiliate links live in the Actions cache (not in the repo).
+      # Restore the newest copy, add any new links, then save it under a new key.
+      - name: Restore links cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/links.json
+          key: links-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: links-
+
+      - name: Convert new deal links to affiliate links
+        run: node scripts/update-links.mjs
+        env:
+          API_URL: ${{ secrets.API_URL || vars.API_URL }}
+          # Only this step gets the converter secrets; the site build never sees them.
+          E_API_TOKEN: ${{ secrets.E_API_TOKEN }}
+          A_API_URL: ${{ secrets.A_API_URL }}
+
+      - name: Save links cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/links.json
+          key: links-${{ github.run_id }}-${{ github.run_attempt }}
+
+      - name: Build site
+        run: npm run build
         env:
           # Works whether these are saved as repository secrets or variables.
           API_URL: ${{ secrets.API_URL || vars.API_URL }}
           THUMBS: ${{ secrets.THUMBS || vars.THUMBS }}
+          # aff (affiliate links) | raw (retailer links) | plink (thuttu redirect)
+          LINK_MODE: ${{ vars.LINK_MODE || 'aff' }}
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
 
   deploy:
     needs: build
