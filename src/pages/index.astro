@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import BottomNav from '../components/BottomNav.astro';
+import Banner from '../components/Banner.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import DealCard from '../components/DealCard.astro';
+import DiscoverTags from '../components/DiscoverTags.astro';
+import Sidebar from '../components/Sidebar.astro';
+import site from '../data/site.json';
+import deals from '../data/deals.json';
+import discover from '../data/discover.json';
+
+// Pinned deals first, then newest.
+const sorted = [...deals].sort((a, b) => Number(b.pinned) - Number(a.pinned) || a.minsAgo - b.minsAgo);
+// A "Discover more" row after every 4 deals (and after the first 4 only on small screens).
+const chunks = [];
+for (let i = 0; i < sorted.length; i += 8) chunks.push(sorted.slice(i, i + 8));
+const tagSets = [discover.tags.slice(0, 9), discover.tags.slice(3), discover.tags.slice(1, 7)];
+---
+<Base>
+  <Header active="New" />
+  <div class="page">
+    <main class="main">
+      <Banner text={site.banner} />
+      <SectionHeader title="New Deals (Latest)" />
+      {chunks.map((chunk, i) => (
+        <>
+          <div class="grid">
+            {chunk.slice(0, 4).map((d) => <DealCard deal={d} />)}
+          </div>
+          <DiscoverTags tags={tagSets[i % tagSets.length]} />
+          {chunk.length > 4 && (
+            <div class="grid">
+              {chunk.slice(4).map((d) => <DealCard deal={d} />)}
+            </div>
+          )}
+        </>
+      ))}
+    </main>
+    <Sidebar links={discover.sidebar} updates={sorted.filter((d) => !d.pinned).slice(0, 8)} />
+  </div>
+  <BottomNav active="New" />
+</Base>
+
+<style>
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  @media (max-width: 768px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+</style>

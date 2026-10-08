@@ -1,0 +1,30 @@
+---
+import { url } from '../lib/format.js';
+import Icon from './Icon.astro';
+const items = [
+  ['New', 'home'], ['Hot', 'fire'], ['Popular', 'megaphone'], ['Comments', 'forum'], ['More', 'more'],
+];
+const { active = 'New' } = Astro.props;
+---
+<nav class="bottom">
+  {items.map(([label, icon]) => (
+    <a href={url()} class:list={{ active: label === active }}>
+      <Icon name={icon} />
+      <span>{label}</span>
+    </a>
+  ))}
+</nav>
+
+<style>
+  .bottom { display: none; }
+  @media (max-width: 1024px) {
+    .bottom {
+      position: fixed; inset: auto 0 0 0; z-index: 10; height: 56px;
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      background: var(--card); border-top: 1px solid var(--border);
+    }
+    a { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); }
+    a :global(svg) { font-size: 22px; }
+    a.active { color: var(--blue); }
+  }
+</style>

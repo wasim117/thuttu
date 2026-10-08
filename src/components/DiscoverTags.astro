@@ -1,0 +1,23 @@
+---
+import Icon from './Icon.astro';
+const { tags } = Astro.props;
+---
+<section class="discover card">
+  <span class="label">Discover more</span>
+  {tags.map((t) => <a class="tag" href="#"><Icon name="article" /> {t}</a>)}
+</section>
+
+<style>
+  .discover {
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: center;
+    gap: 10px; padding: 10px 12px;
+  }
+  .label { font-size: 16px; color: var(--muted); padding: 0 6px; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    border: 1px solid #dadce0; border-radius: 20px; padding: 2px 10px;
+    color: var(--blue); font-size: 16px; font-weight: 500;
+  }
+  .tag :global(svg) { font-size: 13px; }
+  @media (max-width: 1024px) { .label, .tag { font-size: 15px; } }
+</style>

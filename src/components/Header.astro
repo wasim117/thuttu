@@ -1,0 +1,54 @@
+---
+import { url } from '../lib/format.js';
+import Icon from './Icon.astro';
+import site from '../data/site.json';
+const tabs = ['New', 'Hot', 'Popular', 'Comments', 'More'];
+const { active = 'New' } = Astro.props;
+---
+<header class="top">
+  <a class="brand" href={url()}>
+    <img src={url(`favicon.svg`)} alt="" width="32" height="32" />
+    <span>{site.name}</span>
+  </a>
+  <nav class="tabs">
+    {tabs.map((t) => <a href={url()} class:list={['tab', { active: t === active }]}>{t.toUpperCase()}</a>)}
+  </nav>
+  <form class="search" role="search" onsubmit="return false">
+    <input type="search" placeholder="Search for deals, stores & more..." aria-label="Search" />
+    <button type="submit" aria-label="Search"><Icon name="search" /></button>
+  </form>
+  <button class="icon-btn mobile-only" aria-label="Search"><Icon name="search" /></button>
+  <a class="icon-btn" href={url()} aria-label="Refresh"><Icon name="refresh" /></a>
+</header>
+
+<style>
+  .top {
+    position: fixed; inset: 0 0 auto 0; z-index: 10;
+    height: var(--header-h);
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 14px;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+  }
+  .brand { display: flex; align-items: center; gap: 8px; font-size: 22px; margin-right: 24px; }
+  .tabs { display: flex; gap: 4px; }
+  .tab {
+    width: 105px; height: 36px; display: grid; place-items: center;
+    font-size: 14px; font-weight: 500; color: #333; border-radius: 2px;
+  }
+  .tab.active { background: var(--pill); color: var(--blue); }
+  .search {
+    margin-left: auto; display: flex; align-items: center;
+    width: 400px; height: 38px; background: var(--pill); border-radius: 2px; padding: 0 8px 0 14px;
+  }
+  .search input { flex: 1; border: 0; background: transparent; font: inherit; font-size: 14px; outline: none; color: var(--text); }
+  .search button, .icon-btn {
+    border: 0; background: none; padding: 6px; font-size: 22px; color: #333;
+    display: grid; place-items: center; cursor: pointer;
+  }
+  .mobile-only { display: none; }
+  @media (max-width: 1024px) {
+    .tabs, .search { display: none; }
+    .mobile-only { display: grid; margin-left: auto; }
+  }
+</style>

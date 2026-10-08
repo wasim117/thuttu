@@ -1,0 +1,18 @@
+---
+// Plain text badge per store; not the stores' own logos.
+const { store } = Astro.props;
+const styles = {
+  amazon: { label: 'a', bg: '#ffffff', fg: '#111111' },
+  flipkart: { label: 'F', bg: '#fbd400', fg: '#1a56db' },
+};
+const s = styles[store] ?? { label: store[0].toUpperCase(), bg: '#eee', fg: '#333' };
+---
+<span class="store" title={store} style={`background:${s.bg};color:${s.fg}`}>{s.label}</span>
+
+<style>
+  .store {
+    width: 20px; height: 20px; border-radius: 3px;
+    display: inline-grid; place-items: center;
+    font: 700 15px/1 Arial, sans-serif;
+  }
+</style>
