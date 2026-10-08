@@ -21,11 +21,13 @@ function fromApi(d, now) {
   const small = d.image ? `${THUMBS}/small/${d.image}` : '';
   return {
     id: d.id,
-    title: d.title,
+    // The live site shows a prefix such as "Prime Coupon" in brackets before the title.
+    title: d.prefix ? `[${d.prefix}] ${d.title}` : d.title,
     store: d.store,
-    price: d.dprice,
-    oldPrice: d.oprice,
-    discount: d.off,
+    // Offer-style deals have no price (dprice 0); the card then leaves the price row empty.
+    price: d.dprice || null,
+    oldPrice: d.oprice || null,
+    discount: d.off || null,
     // Prefer the retailer's original image; fall back to our own thumbnail if it is missing or fails to load.
     image: sizedImage(d.origimage, 240) || medium,
     imageFallback: d.origimage ? medium : '',
@@ -42,8 +44,9 @@ function fromApi(d, now) {
 }
 
 // Fetched once at build time; the static page shows whatever was live then.
-export async function getDeals({ sort = 'new', perPage = 24, page = 1 } = {}) {
-  const qs = new URLSearchParams({ act: 'gdeals', st: sort, ppg: String(perPage), page: String(page), lt: '' });
+// Pass `tag` (e.g. 'popular') for a tagged list, otherwise `sort` (e.g. 'new').
+export async function getDeals({ sort = 'new', tag, perPage = 24, page = 1 } = {}) {
+  const qs = new URLSearchParams({ act: 'gdeals', ...(tag ? { tag } : { st: sort }), ppg: String(perPage), page: String(page), lt: '' });
   try {
     const res = await fetch(`${API}?${qs}`, {
       headers: { authorization: 'Bearer noidtoken', 'content-type': 'application/json' },

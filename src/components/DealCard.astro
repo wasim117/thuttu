@@ -23,9 +23,13 @@ const { deal, eager = false } = Astro.props;
   <StoreBadge store={deal.store} />
   <a class="title" href={deal.url} rel="nofollow noopener sponsored">{deal.title}</a>
   <button class="menu" aria-label="More options"><Icon name="chevronDown" /></button>
-  <span class="off"><Icon name="arrowDown" />{deal.discount}%</span>
-  <span class="price">{rupees(deal.price)}</span>
-  <span class="old">{rupees(deal.oldPrice)}</span>
+  {deal.price && (
+    <>
+      <span class="off">{deal.discount && <><Icon name="arrowDown" />{deal.discount}%</>}</span>
+      <span class="price">{rupees(deal.price)}</span>
+      <span class="old">{deal.oldPrice && rupees(deal.oldPrice)}</span>
+    </>
+  )}
   <span class="likes"><Icon name="like" />{deal.likes}</span>
   <span class="views"><Icon name="eye" />{deal.views}</span>
   <span class="time"><Icon name="clock" />{ago(deal.minsAgo)}</span>

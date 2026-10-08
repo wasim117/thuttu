@@ -1,5 +1,6 @@
 ---
 import { url } from '../lib/format.js';
+import { routes } from '../lib/routes.js';
 import Icon from './Icon.astro';
 import site from '../data/site.json';
 const tabs = ['New', 'Hot', 'Popular', 'Comments', 'Live', 'More'];
@@ -12,7 +13,7 @@ const { active = 'New' } = Astro.props;
       <span>{site.name}</span>
     </a>
     <nav class="tabs">
-      {tabs.map((t) => <a href={url()} class:list={['tab', { active: t === active }]}>{t.toUpperCase()}</a>)}
+      {tabs.map((t) => <a href={t in routes ? url(routes[t]) : '#'} class:list={['tab', { active: t === active }]}>{t.toUpperCase()}</a>)}
     </nav>
     <form class="search" role="search" onsubmit="return false">
       <input type="search" placeholder="Search for deals, stores & more..." aria-label="Search" />

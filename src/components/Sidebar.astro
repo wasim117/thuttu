@@ -36,9 +36,9 @@ const { links, updates } = Astro.props;
           <div>
             <p>{d.title}</p>
             <div class="nums">
-              <span>{d.discount}% Off</span>
-              <b>{rupees(d.price)}</b>
-              <s>{rupees(d.oldPrice)}</s>
+              {d.discount && <span>{d.discount}% Off</span>}
+              {d.price && <b>{rupees(d.price)}</b>}
+              {d.oldPrice && <s>{rupees(d.oldPrice)}</s>}
               <StoreBadge store={d.store} />
             </div>
           </div>

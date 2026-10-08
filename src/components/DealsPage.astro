@@ -1,0 +1,63 @@
+---
+// Shared layout for a deal-list page (home, popular, ...).
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import BottomNav from './BottomNav.astro';
+import Banner from './Banner.astro';
+import SectionHeader from './SectionHeader.astro';
+import DealCard from './DealCard.astro';
+import DiscoverTags from './DiscoverTags.astro';
+import Sidebar from './Sidebar.astro';
+import discover from '../data/discover.json';
+
+const { title, heading, active, deals, updates, banner, notify = false } = Astro.props;
+const pane = `nav-${active.toLowerCase()}`;
+const tagSets = [discover.tags.slice(0, 9), discover.tags.slice(3)];
+---
+<Base title={title}>
+  <Header active={active} />
+  <div class="page">
+    <main class="main">
+      {banner && <Banner text={banner} />}
+      <SectionHeader title={heading} pane={pane} notify={notify} />
+      <div id={pane} class="navpane list">
+        {deals.map((d, i) => <div class="cell" style={`order:${i * 2}`}><DealCard deal={d} eager={i < 6} /></div>)}
+        {tagSets.map((tags, k) => (
+          <div class="break" style={`--k:${k + 1}`}><DiscoverTags tags={tags} /></div>
+        ))}
+      </div>
+    </main>
+    <Sidebar links={discover.sidebar} updates={updates} />
+  </div>
+  <BottomNav active={active} />
+
+  <script is:inline>
+    (() => {
+      const root = document.documentElement;
+      const apply = (view) => {
+        root.dataset.view = view;
+        document.querySelectorAll('.navpane').forEach((p) => {
+          p.classList.remove('list', 'grid');
+          p.classList.add(view);
+        });
+      };
+      apply(root.dataset.view || 'list');
+      document.querySelectorAll('.view-toggle').forEach((btn) =>
+        btn.addEventListener('click', () => {
+          const next = root.dataset.view === 'grid' ? 'list' : 'grid';
+          apply(next);
+          try { localStorage.setItem('thuttu:view', next); } catch {}
+        }),
+      );
+    })();
+  </script>
+</Base>
+
+<style>
+  .navpane { display: grid; gap: 10px; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); }
+  .navpane.list { --cols: var(--list-n); }
+  .navpane.grid { --cols: var(--grid-n); }
+  .cell { min-width: 0; }
+  /* "Discover more" spans the row after every two rows of deals (at least 3 deals). */
+  .break { grid-column: 1 / -1; order: calc(max(var(--cols) * 2, 3) * 2 * var(--k) - 1); }
+</style>

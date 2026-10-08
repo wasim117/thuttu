@@ -1,65 +1,16 @@
 ---
-import Base from '../layouts/Base.astro';
-import Header from '../components/Header.astro';
-import BottomNav from '../components/BottomNav.astro';
-import Banner from '../components/Banner.astro';
-import SectionHeader from '../components/SectionHeader.astro';
-import DealCard from '../components/DealCard.astro';
-import DiscoverTags from '../components/DiscoverTags.astro';
-import Sidebar from '../components/Sidebar.astro';
+import DealsPage from '../components/DealsPage.astro';
 import site from '../data/site.json';
 import { getDeals } from '../lib/deals.js';
-import discover from '../data/discover.json';
 
 const deals = await getDeals({ sort: 'new', perPage: 24 });
 // Pinned deals first, then newest.
 const sorted = [...deals].sort((a, b) => Number(b.pinned) - Number(a.pinned) || a.minsAgo - b.minsAgo);
-const tagSets = [discover.tags.slice(0, 9), discover.tags.slice(3)];
 ---
-<Base>
-  <Header active="New" />
-  <div class="page">
-    <main class="main">
-      <Banner text={site.banner} />
-      <SectionHeader title="New Deals (Latest)" pane="nav-new" />
-      <div id="nav-new" class="navpane list">
-        {sorted.map((d, i) => <div class="cell" style={`order:${i * 2}`}><DealCard deal={d} eager={i < 6} /></div>)}
-        {tagSets.map((tags, k) => (
-          <div class="break" style={`--k:${k + 1}`}><DiscoverTags tags={tags} /></div>
-        ))}
-      </div>
-    </main>
-    <Sidebar links={discover.sidebar} updates={sorted.filter((d) => !d.pinned).slice(0, 8)} />
-  </div>
-  <BottomNav active="New" />
-
-  <script is:inline>
-    (() => {
-      const root = document.documentElement;
-      const apply = (view) => {
-        root.dataset.view = view;
-        document.querySelectorAll('.navpane').forEach((p) => {
-          p.classList.remove('list', 'grid');
-          p.classList.add(view);
-        });
-      };
-      apply(root.dataset.view || 'list');
-      document.querySelectorAll('.view-toggle').forEach((btn) =>
-        btn.addEventListener('click', () => {
-          const next = root.dataset.view === 'grid' ? 'list' : 'grid';
-          apply(next);
-          try { localStorage.setItem('thuttu:view', next); } catch {}
-        }),
-      );
-    })();
-  </script>
-</Base>
-
-<style>
-  .navpane { display: grid; gap: 10px; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); }
-  .navpane.list { --cols: var(--list-n); }
-  .navpane.grid { --cols: var(--grid-n); }
-  .cell { min-width: 0; }
-  /* "Discover more" spans the row after every two rows of deals (at least 3 deals). */
-  .break { grid-column: 1 / -1; order: calc(max(var(--cols) * 2, 3) * 2 * var(--k) - 1); }
-</style>
+<DealsPage
+  heading="New Deals (Latest)"
+  active="New"
+  banner={site.banner}
+  deals={sorted}
+  updates={sorted.filter((d) => !d.pinned).slice(0, 8)}
+/>

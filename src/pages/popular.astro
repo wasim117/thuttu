@@ -1,0 +1,19 @@
+---
+import DealsPage from '../components/DealsPage.astro';
+import site from '../data/site.json';
+import { getDeals } from '../lib/deals.js';
+
+// Keep the API's order: most recently made popular first.
+const [popular, latest] = await Promise.all([
+  getDeals({ tag: 'popular', perPage: 24 }),
+  getDeals({ sort: 'new', perPage: 9 }),
+]);
+---
+<DealsPage
+  title={`Popular Deals & Offers from Amazon, Flipkart - ${site.name}`}
+  heading="Popular Deals (Trending)"
+  active="Popular"
+  notify
+  deals={popular}
+  updates={latest.filter((d) => !d.pinned).slice(0, 8)}
+/>

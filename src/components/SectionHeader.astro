@@ -1,9 +1,10 @@
 ---
 import Icon from './Icon.astro';
-const { title, pane } = Astro.props;
+const { title, pane, notify = false } = Astro.props;
 ---
 <div class="sh card">
   <h1>{title}</h1>
+  {notify && <a class="notify" href="#">NOTIFY</a>}
   <button class="view-toggle" data-pane={pane} aria-label="Switch between list and grid view" title="Switch view">
     <span class="to-grid"><Icon name="viewGrid" /></span>
     <span class="to-list"><Icon name="viewList" /></span>
@@ -12,6 +13,7 @@ const { title, pane } = Astro.props;
 
 <style>
   .sh { display: flex; align-items: center; justify-content: space-between; height: 50px; padding: 0 20px; }
+  .notify { margin-left: auto; margin-right: 12px; color: var(--primary-color); font-size: 14px; font-weight: 500; letter-spacing: 0.3px; }
   h1 { margin: 0; font-size: 17px; font-weight: 400; color: var(--text-color); }
   .view-toggle { border: 0; background: none; font-size: 24px; color: var(--muted); padding: 4px; cursor: pointer; display: grid; }
   /* Show the icon for the view you would switch to. */
