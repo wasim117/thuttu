@@ -1,9 +1,20 @@
 ---
-import site from '../data/site.json';
+import { url } from '../lib/format.js';
+// Icons saved in public/img/stores/. Other stores get a plain letter badge.
+const ICONS = ['amazon', 'flipkart'];
 const { store, size = 19 } = Astro.props;
+const known = ICONS.includes(store);
 ---
-<img class="store" src={site.storeIcon.replace('{store}', store)} alt={store} title={store} width={size} height={size} loading="lazy" />
+{known ? (
+  <img class="store" src={url(`img/stores/${store}.png`)} alt={store} title={store} width={size} height={size} loading="lazy" />
+) : (
+  <span class="store letter" title={store} style={`width:${size}px;height:${size}px`}>{(store || '?')[0].toUpperCase()}</span>
+)}
 
 <style>
   .store { display: block; background: var(--store-bg); border-radius: var(--radius); opacity: var(--img-opacity); }
+  .letter {
+    display: grid; place-items: center; background: var(--bg-color); color: var(--text-color);
+    font: 700 12px/1 Arial, sans-serif;
+  }
 </style>
