@@ -2,52 +2,59 @@
 import { url } from '../lib/format.js';
 import Icon from './Icon.astro';
 import site from '../data/site.json';
-const tabs = ['New', 'Hot', 'Popular', 'Comments', 'More'];
+const tabs = ['New', 'Hot', 'Popular', 'Comments', 'Live', 'More'];
 const { active = 'New' } = Astro.props;
 ---
 <header class="top">
-  <a class="brand" href={url()}>
-    <img src={url(`favicon.svg`)} alt="" width="32" height="32" />
-    <span>{site.name}</span>
-  </a>
-  <nav class="tabs">
-    {tabs.map((t) => <a href={url()} class:list={['tab', { active: t === active }]}>{t.toUpperCase()}</a>)}
-  </nav>
-  <form class="search" role="search" onsubmit="return false">
-    <input type="search" placeholder="Search for deals, stores & more..." aria-label="Search" />
-    <button type="submit" aria-label="Search"><Icon name="search" /></button>
-  </form>
-  <button class="icon-btn mobile-only" aria-label="Search"><Icon name="search" /></button>
-  <a class="icon-btn" href={url()} aria-label="Refresh"><Icon name="refresh" /></a>
+  <div class="bar">
+    <a class="brand" href={url()}>
+      <img src={site.logo} alt="" width="33" height="33" />
+      <span>{site.name}</span>
+    </a>
+    <nav class="tabs">
+      {tabs.map((t) => <a href={url()} class:list={['tab', { active: t === active }]}>{t.toUpperCase()}</a>)}
+    </nav>
+    <form class="search" role="search" onsubmit="return false">
+      <input type="search" placeholder="Search for deals, stores & more..." aria-label="Search" />
+      <button type="submit" aria-label="Search"><Icon name="search" /></button>
+    </form>
+    <button class="icon-btn mobile-only" aria-label="Search"><Icon name="search" /></button>
+    <a class="icon-btn" href={url()} aria-label="Refresh"><Icon name="refresh" /></a>
+  </div>
 </header>
 
 <style>
   .top {
     position: fixed; inset: 0 0 auto 0; z-index: 10;
-    height: var(--header-h);
-    display: flex; align-items: center; gap: 8px;
-    padding: 0 14px;
-    background: var(--card);
-    border-bottom: 1px solid var(--border);
+    height: var(--topbar-height);
+    background: var(--bg-content-color);
+    box-shadow: var(--bar-box-shadow);
   }
-  .brand { display: flex; align-items: center; gap: 8px; font-size: 22px; margin-right: 24px; }
-  .tabs { display: flex; gap: 4px; }
+  .bar {
+    height: 100%; max-width: var(--app-width); margin: 0 auto; padding: 0 10px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .brand { display: flex; align-items: center; gap: 8px; font-size: 22px; color: var(--text-color); margin-right: 26px; }
+  .brand img { border-radius: 50%; }
+  .tabs { display: flex; gap: 0; }
   .tab {
-    width: 105px; height: 36px; display: grid; place-items: center;
-    font-size: 14px; font-weight: 500; color: #333; border-radius: 2px;
+    width: 125px; height: 36px; display: grid; place-items: center;
+    font-size: 14.5px; font-weight: 500; color: var(--nav-item-color); border-radius: var(--radius);
   }
-  .tab.active { background: var(--pill); color: var(--blue); }
+  .tab.active { background: var(--bg-color); color: var(--primary-color); }
   .search {
     margin-left: auto; display: flex; align-items: center;
-    width: 400px; height: 38px; background: var(--pill); border-radius: 2px; padding: 0 8px 0 14px;
+    width: 478px; height: 38px; background: var(--bg-color); border-radius: var(--radius); padding: 0 8px 0 14px;
   }
-  .search input { flex: 1; border: 0; background: transparent; font: inherit; font-size: 14px; outline: none; color: var(--text); }
+  .search input { flex: 1; border: 0; background: transparent; font: inherit; font-size: 15px; outline: none; color: var(--text-color); }
+  .search input::placeholder { color: var(--muted); }
   .search button, .icon-btn {
-    border: 0; background: none; padding: 6px; font-size: 22px; color: #333;
+    border: 0; background: none; padding: 6px; font-size: 24px; color: var(--text-color);
     display: grid; place-items: center; cursor: pointer;
   }
   .mobile-only { display: none; }
-  @media (max-width: 1024px) {
+  @media (max-width: 1409px) { .tab { width: 100px; } .search { width: 380px; } }
+  @media (max-width: 1109px) {
     .tabs, .search { display: none; }
     .mobile-only { display: grid; margin-left: auto; }
   }

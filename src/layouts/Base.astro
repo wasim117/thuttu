@@ -1,18 +1,21 @@
 ---
-import { url } from '../lib/format.js';
 import '../styles/global.css';
 import site from '../data/site.json';
 const { title = `${site.tagline} - ${site.name}` } = Astro.props;
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" data-view="list">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
-    <link rel="icon" type="image/svg+xml" href={url("favicon.svg")} />
+    <link rel="icon" type="image/png" href={site.logo} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" />
+    <script is:inline>
+      // Apply the saved list/grid view before first paint.
+      try { if (localStorage.getItem('thuttu:view') === 'grid') document.documentElement.dataset.view = 'grid'; } catch {}
+    </script>
   </head>
   <body>
     <slot />

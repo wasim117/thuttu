@@ -14,37 +14,52 @@ import discover from '../data/discover.json';
 const deals = await getDeals({ sort: 'new', perPage: 24 });
 // Pinned deals first, then newest.
 const sorted = [...deals].sort((a, b) => Number(b.pinned) - Number(a.pinned) || a.minsAgo - b.minsAgo);
-// A "Discover more" row after every 4 deals (and after the first 4 only on small screens).
-const chunks = [];
-for (let i = 0; i < sorted.length; i += 8) chunks.push(sorted.slice(i, i + 8));
-const tagSets = [discover.tags.slice(0, 9), discover.tags.slice(3), discover.tags.slice(1, 7)];
+const tagSets = [discover.tags.slice(0, 9), discover.tags.slice(3)];
 ---
 <Base>
   <Header active="New" />
   <div class="page">
     <main class="main">
       <Banner text={site.banner} />
-      <SectionHeader title="New Deals (Latest)" />
-      {chunks.map((chunk, i) => (
-        <>
-          <div class="grid">
-            {chunk.slice(0, 4).map((d) => <DealCard deal={d} />)}
-          </div>
-          <DiscoverTags tags={tagSets[i % tagSets.length]} />
-          {chunk.length > 4 && (
-            <div class="grid">
-              {chunk.slice(4).map((d) => <DealCard deal={d} />)}
-            </div>
-          )}
-        </>
-      ))}
+      <SectionHeader title="New Deals (Latest)" pane="nav-new" />
+      <div id="nav-new" class="navpane list">
+        {sorted.map((d, i) => <div class="cell" style={`order:${i * 2}`}><DealCard deal={d} /></div>)}
+        {tagSets.map((tags, k) => (
+          <div class="break" style={`--k:${k + 1}`}><DiscoverTags tags={tags} /></div>
+        ))}
+      </div>
     </main>
     <Sidebar links={discover.sidebar} updates={sorted.filter((d) => !d.pinned).slice(0, 8)} />
   </div>
   <BottomNav active="New" />
+
+  <script is:inline>
+    (() => {
+      const root = document.documentElement;
+      const apply = (view) => {
+        root.dataset.view = view;
+        document.querySelectorAll('.navpane').forEach((p) => {
+          p.classList.remove('list', 'grid');
+          p.classList.add(view);
+        });
+      };
+      apply(root.dataset.view || 'list');
+      document.querySelectorAll('.view-toggle').forEach((btn) =>
+        btn.addEventListener('click', () => {
+          const next = root.dataset.view === 'grid' ? 'list' : 'grid';
+          apply(next);
+          try { localStorage.setItem('thuttu:view', next); } catch {}
+        }),
+      );
+    })();
+  </script>
 </Base>
 
 <style>
-  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-  @media (max-width: 768px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+  .navpane { display: grid; gap: 10px; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); }
+  .navpane.list { --cols: var(--list-n); }
+  .navpane.grid { --cols: var(--grid-n); }
+  .cell { min-width: 0; }
+  /* "Discover more" spans the row after every two rows of deals (at least 3 deals). */
+  .break { grid-column: 1 / -1; order: calc(max(var(--cols) * 2, 3) * 2 * var(--k) - 1); }
 </style>

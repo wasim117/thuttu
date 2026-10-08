@@ -1,5 +1,7 @@
 {
   "name": "Thuttu",
   "tagline": "Hot online shopping deals & offers",
-  "banner": "Festive Season Sale is Live"
+  "banner": "Amazon Great Indian Festival Live",
+  "logo": "https://www.thuttu.com/assets/logo-thuttu-trans-50.png",
+  "storeIcon": "https://api.thuttu.com/images/simg/square/{store}.png"
 }

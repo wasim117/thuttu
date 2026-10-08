@@ -17,14 +17,14 @@ const { active = 'New' } = Astro.props;
 
 <style>
   .bottom { display: none; }
-  @media (max-width: 1024px) {
+  @media (max-width: 1109px) {
     .bottom {
-      position: fixed; inset: auto 0 0 0; z-index: 10; height: 56px;
+      position: fixed; inset: auto 0 0 0; z-index: 10; height: var(--bnav-height);
       display: grid; grid-template-columns: repeat(5, 1fr);
-      background: var(--card); border-top: 1px solid var(--border);
+      background: var(--bg-content-color); box-shadow: 0 -1px 3px rgba(0,0,0,.12);
     }
     a { display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); }
     a :global(svg) { font-size: 22px; }
-    a.active { color: var(--blue); }
+    a.active { color: var(--primary-color); }
   }
 </style>
