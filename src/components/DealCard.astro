@@ -1,12 +1,22 @@
 ---
 import Icon from './Icon.astro';
 import StoreBadge from './StoreBadge.astro';
-import { ago, rupees, url } from '../lib/format.js';
-const { deal } = Astro.props;
+import { ago, rupees, url, IMG_FALLBACK } from '../lib/format.js';
+const { deal, eager = false } = Astro.props;
 ---
 <article class="deal">
   <a class="thumb" href={deal.url} rel="nofollow noopener sponsored">
-    <img src={url(deal.image)} alt={deal.title} width="118" height="118" loading="lazy" />
+    <img
+      src={url(deal.image)}
+      data-fallback={deal.imageFallback || undefined}
+      onerror={deal.imageFallback ? IMG_FALLBACK : undefined}
+      alt={deal.title}
+      width="118"
+      height="118"
+      loading={eager ? 'eager' : 'lazy'}
+      fetchpriority={eager ? 'high' : undefined}
+      decoding="async"
+    />
     <span class="get"><Icon name="cart" /> Get Deal</span>
     {deal.pinned && <span class="pinned">PINNED</span>}
   </a>

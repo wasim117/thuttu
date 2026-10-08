@@ -23,7 +23,7 @@ const tagSets = [discover.tags.slice(0, 9), discover.tags.slice(3)];
       <Banner text={site.banner} />
       <SectionHeader title="New Deals (Latest)" pane="nav-new" />
       <div id="nav-new" class="navpane list">
-        {sorted.map((d, i) => <div class="cell" style={`order:${i * 2}`}><DealCard deal={d} /></div>)}
+        {sorted.map((d, i) => <div class="cell" style={`order:${i * 2}`}><DealCard deal={d} eager={i < 6} /></div>)}
         {tagSets.map((tags, k) => (
           <div class="break" style={`--k:${k + 1}`}><DiscoverTags tags={tags} /></div>
         ))}

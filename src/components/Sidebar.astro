@@ -1,7 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import StoreBadge from './StoreBadge.astro';
-import { ago, rupees, url } from '../lib/format.js';
+import { ago, rupees, url, IMG_FALLBACK } from '../lib/format.js';
 const { links, updates } = Astro.props;
 ---
 <aside class="sidebar">
@@ -23,7 +23,16 @@ const { links, updates } = Astro.props;
       <li>
         <small>new deal posted {ago(d.minsAgo)} ago</small>
         <a class="row" href={d.url} rel="nofollow noopener sponsored">
-          <img src={url(d.thumb ?? d.image)} alt="" width="64" height="64" loading="lazy" />
+          <img
+            src={url(d.thumb ?? d.image)}
+            data-fallback={d.thumbFallback || undefined}
+            onerror={d.thumbFallback ? IMG_FALLBACK : undefined}
+            alt=""
+            width="64"
+            height="64"
+            loading="lazy"
+            decoding="async"
+          />
           <div>
             <p>{d.title}</p>
             <div class="nums">

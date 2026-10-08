@@ -11,3 +11,6 @@ export function ago(mins) {
 // BASE_URL may or may not end with "/" depending on config; normalise it.
 const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
 export const url = (path = '') => (/^https?:\/\//.test(path) ? path : base + path.replace(/^\//, ''));
+
+// Inline onerror handler: swap to data-fallback once, then give up.
+export const IMG_FALLBACK = 'this.onerror=null;if(this.dataset.fallback)this.src=this.dataset.fallback';

@@ -6,7 +6,19 @@ const THUMBS = 'https://api.thuttu.com/thumbs';
 // API dates are IST without a zone, e.g. "2026-10-09 01:27:04".
 const parseIst = (s) => new Date(s.replace(' ', 'T') + '+05:30');
 
+// Ask the retailer CDN for a small rendition instead of the full-size original.
+// Flipkart: /image/800/1070/... -> /image/240/240/...; Amazon: ._SX679_... . -> ._SL240_.
+// Unknown hosts are used as-is.
+export function sizedImage(src, px) {
+  if (!src) return '';
+  if (/\.flixcart\.com\/image\/\d+\/\d+\//.test(src)) return src.replace(/\/image\/\d+\/\d+\//, `/image/${px}/${px}/`);
+  if (/media-amazon\.com\/images\/I\//.test(src)) return src.replace(/\._[^/]*_\.(jpe?g|png|webp)$/i, `._SL${px}_.$1`);
+  return src;
+}
+
 function fromApi(d, now) {
+  const medium = d.image ? `${THUMBS}/medium/${d.image}` : '';
+  const small = d.image ? `${THUMBS}/small/${d.image}` : '';
   return {
     id: d.id,
     title: d.title,
@@ -14,8 +26,11 @@ function fromApi(d, now) {
     price: d.dprice,
     oldPrice: d.oprice,
     discount: d.off,
-    image: `${THUMBS}/medium/${d.image}`,
-    thumb: `${THUMBS}/small/${d.image}`,
+    // Prefer the retailer's original image; fall back to our own thumbnail if it is missing or fails to load.
+    image: sizedImage(d.origimage, 240) || medium,
+    imageFallback: d.origimage ? medium : '',
+    thumb: sizedImage(d.origimage, 128) || small,
+    thumbFallback: d.origimage ? small : '',
     url: d.plink || d.rawlink,
     likes: d.nlikes ?? 0,
     views: d.nviews ?? 0,
