@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Top 5 Budget Wireless Earbuds</title>
+  <meta name="description" content="Sample top-5 comparison page with pros, cons and coupon codes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap" />
+  <!--
+    Sample landing page: a ranked "top 5" list with pros/cons and reveal-on-click
+    coupon codes. Brands, ratings, codes and copy are placeholders; replace them
+    with real products and affiliate links before publishing.
+  -->
+  <style>
+    :root {
+      --bg: #ffffff;
+      --band: #f1f1f1;
+      --text: #1f2933;
+      --muted: #52606d;
+      --border: #e1e4e8;
+      --accent: #ff5a1f;
+      --accent-dark: #e14b12;
+      --best: #3ddbb0;
+      --star: #f5b83d;
+      --pro-bg: #e6f4ea;
+      --pro: #2e9e5b;
+      --con-bg: #f6ebea;
+      --con: #e05252;
+      --link: #2563eb;
+      --radius: 4px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #11161c;
+        --band: #1a2129;
+        --text: #e6e9ec;
+        --muted: #a3acb5;
+        --border: #2b343e;
+        --pro-bg: #15291e;
+        --con-bg: #2e1b1b;
+        --link: #6ea8fe;
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    a { color: var(--link); }
+    .wrap { max-width: 1170px; margin: 0 auto; padding: 0 16px; }
+
+    /* Top bar */
+    .brand { text-align: center; padding: 14px 0; letter-spacing: 2px; font-size: 20px; font-weight: 500; }
+
+    /* Hero */
+    .hero { background: var(--band); padding: 28px 0 32px; }
+    .hero .wrap { display: grid; grid-template-columns: 1.15fr 1fr; gap: 40px; align-items: center; }
+    .hero h1 { margin: 0 0 6px; font-size: 34px; line-height: 1.2; font-weight: 600; }
+    .hero p { margin: 0 0 18px; color: var(--muted); max-width: 560px; }
+    .checks { list-style: none; margin: 0; padding: 0; }
+    .checks li { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; font-size: 14px; color: var(--muted); }
+    .checks svg { flex: none; width: 18px; height: 18px; margin-top: 2px; }
+    .hero-art {
+      aspect-ratio: 16 / 10; border-radius: 6px; overflow: hidden;
+      background: linear-gradient(135deg, #ffd8c7, #ffefe7 45%, #dff6ef);
+      display: grid; place-items: center;
+    }
+    .hero-art svg { width: 62%; height: auto; }
+
+    /* List */
+    .updated { margin: 22px 0 12px; font-size: 14px; color: var(--muted); }
+    .card {
+      display: grid; grid-template-columns: 200px 1fr 220px; gap: 24px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 28px 24px; margin-bottom: 36px; background: var(--bg);
+    }
+    .card.best { border: 2px solid var(--best); }
+    .score { text-align: center; align-self: center; }
+    .logo {
+      height: 56px; display: grid; place-items: center; margin-bottom: 14px;
+      font-weight: 700; font-size: 22px; letter-spacing: 1px; color: var(--muted);
+    }
+    .stars { color: var(--star); font-size: 18px; letter-spacing: 2px; }
+    .rating { font-size: 14px; font-weight: 500; }
+    .card h2 { margin: 0 0 8px; font-size: 21px; font-weight: 600; }
+    .card .desc { margin: 0 0 18px; font-size: 14px; color: var(--muted); }
+    .pc { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .pc > div { padding: 14px 16px; border-radius: var(--radius); }
+    .pros { background: var(--pro-bg); }
+    .cons { background: var(--con-bg); }
+    .pc h3 { margin: 0 0 10px; font-size: 14px; font-weight: 600; }
+    .pc ul { list-style: none; margin: 0; padding: 0; }
+    .pc li { display: flex; gap: 10px; margin-bottom: 8px; font-size: 13.5px; line-height: 1.45; }
+    .pc li::before {
+      content: ""; flex: none; width: 16px; height: 16px; margin-top: 1px; border-radius: 3px;
+      background: var(--pro) no-repeat center / 12px
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='white' stroke-width='3' d='M5 12l5 5 9-10'/%3E%3C/svg%3E");
+    }
+    .cons li::before {
+      background-color: var(--con);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='white' stroke-width='3' d='M7 7l10 10M17 7L7 17'/%3E%3C/svg%3E");
+    }
+    .social { display: flex; align-items: center; gap: 8px; margin: 16px 0 0; font-size: 13.5px; color: var(--link); }
+    .deal { text-align: center; }
+    .coupon {
+      position: relative; display: inline-flex; height: 34px; width: 190px; border: 0; padding: 0;
+      background: var(--band); border-radius: 2px; overflow: hidden; cursor: pointer; font: inherit;
+    }
+    .coupon .code {
+      flex: 1; display: grid; place-items: center end; padding-right: 10px;
+      font-size: 13px; font-weight: 600; letter-spacing: 1px; color: var(--text);
+      border: 1px dashed var(--border); border-left: 0;
+    }
+    .coupon .cover {
+      position: absolute; inset: 0 26px 0 0; display: grid; place-items: center;
+      background: var(--accent); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 1px;
+      clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%); transition: transform .25s ease;
+    }
+    .coupon:hover .cover { background: var(--accent-dark); }
+    .coupon.revealed .cover { transform: translateX(-102%); }
+    .coupon.revealed .code { place-items: center; padding: 0; }
+    .copied { display: block; height: 18px; margin-top: 4px; font-size: 12px; color: var(--pro); }
+    .store { margin: 6px 0 0; font-size: 14px; }
+
+    /* FAQ */
+    .faq { background: var(--band); padding: 56px 0 64px; margin-top: 24px; }
+    .faq h2 { text-align: center; margin: 0 0 24px; font-size: 28px; font-weight: 600; }
+    .faq details { max-width: 720px; margin: 0 auto 12px; border: 1px solid var(--text); border-radius: 2px; background: var(--bg); }
+    .faq summary {
+      list-style: none; cursor: pointer; padding: 12px 18px; font-weight: 600;
+      display: flex; justify-content: space-between; gap: 16px;
+    }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after { content: "+"; font-weight: 400; font-size: 20px; line-height: 1; }
+    .faq details[open] summary::after { content: "\2212"; }
+    .faq details p { margin: 0; padding: 0 18px 14px; font-size: 14px; color: var(--muted); }
+
+    /* Reviewers */
+    .team { padding: 40px 0 8px; }
+    .team h2 { margin: 0 0 20px; font-size: 22px; font-weight: 600; }
+    .people { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .person { display: flex; align-items: center; gap: 14px; }
+    .avatar {
+      flex: none; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center;
+      color: #fff; font-weight: 700; font-size: 18px;
+    }
+    .person b { display: block; font-size: 15px; }
+    .person span { font-size: 13.5px; color: var(--muted); }
+    footer { text-align: center; padding: 18px 0 26px; margin-top: 28px; border-top: 1px solid var(--border); font-size: 13.5px; color: var(--muted); }
+
+    /* Phone */
+    @media (max-width: 860px) {
+      .hero .wrap { grid-template-columns: 1fr; gap: 18px; }
+      .hero h1 { font-size: 26px; }
+      .card { grid-template-columns: 1fr; gap: 14px; padding: 22px 18px; margin-bottom: 24px; }
+      .pc { grid-template-columns: 1fr; }
+      .deal { text-align: left; }
+      .people { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="brand">TOP5PICKS</div>
+
+  <header class="hero">
+    <div class="wrap">
+      <div>
+        <h1>Best budget wireless earbuds in 2026</h1>
+        <p>Picking earbuds under ₹2,000 is mostly about trade-offs. We compared five popular options on sound, battery life and comfort so you can choose quickly.</p>
+        <ul class="checks">
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#2e9e5b" /><path d="M7 12.5l3 3 7-7" fill="none" stroke="#fff" stroke-width="2.4" /></svg>We test each pair for at least a week of daily use.</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#2e9e5b" /><path d="M7 12.5l3 3 7-7" fill="none" stroke="#fff" stroke-width="2.4" /></svg>We check warranty terms and after-sales support.</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#2e9e5b" /><path d="M7 12.5l3 3 7-7" fill="none" stroke="#fff" stroke-width="2.4" /></svg>We track prices and coupons across major stores.</li>
+        </ul>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <!-- Simple illustration; swap for a product photo you own. -->
+        <svg viewBox="0 0 200 120">
+          <rect x="62" y="34" width="76" height="54" rx="27" fill="#fff" stroke="#1f2933" stroke-width="3" />
+          <line x1="62" y1="61" x2="138" y2="61" stroke="#1f2933" stroke-width="2" />
+          <circle cx="86" cy="49" r="9" fill="#ff5a1f" />
+          <circle cx="114" cy="49" r="9" fill="#ff5a1f" />
+          <circle cx="100" cy="75" r="3" fill="#3ddbb0" />
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <p class="updated">Updated October 2026</p>
+
+    <!-- Card template: copy an <article class="card"> block to add or reorder entries. -->
+    <article class="card best">
+      <div class="score">
+        <div class="logo">BRAND A</div>
+        <div class="stars" aria-hidden="true">★★★★★</div>
+        <div class="rating">4.6 out of 5 (128 reviews)</div>
+      </div>
+      <div>
+        <h2>#1 - Brand A Pulse Buds</h2>
+        <p class="desc">The best all-rounder here: balanced sound, a snug fit and a case that tops up the buds four times. Touch controls take a day to learn but work reliably after that.</p>
+        <div class="pc">
+          <div class="pros"><h3>Pros</h3><ul><li>Up to 32 hours with the case</li><li>Low-latency gaming mode</li><li>Fast charging over USB-C</li></ul></div>
+          <div class="cons"><h3>Cons</h3><ul><li>No volume control on the buds</li><li>Case scratches easily</li></ul></div>
+        </div>
+        <p class="social"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2 21h4V9H2v12zm20-11a2 2 0 0 0-2-2h-6.3l1-4.6v-.3c0-.4-.2-.8-.4-1.1L13.2 1 6.6 7.6c-.4.4-.6.9-.6 1.4v10a2 2 0 0 0 2 2h9c.8 0 1.5-.5 1.8-1.2l3-7.1c.1-.2.2-.5.2-.7v-2z" /></svg>Over 2,000 people picked Brand A this week</p>
+      </div>
+      <div class="deal">
+        <button class="coupon" type="button" data-code="PULSE150" aria-label="Show coupon code"><span class="code">PULSE150</span><span class="cover">SHOW CODE</span></button>
+        <span class="copied" aria-live="polite"></span>
+        <p class="store">at <a href="https://example.com" rel="nofollow sponsored noopener" target="_blank">Example.com</a></p>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="score">
+        <div class="logo">BRAND B</div>
+        <div class="stars" aria-hidden="true">★★★★★</div>
+        <div class="rating">4.5 out of 5 (96 reviews)</div>
+      </div>
+      <div>
+        <h2>#2 - Brand B Air Lite</h2>
+        <p class="desc">Very light and comfortable for long calls, with clear microphones. Bass is modest, so pick something else if you mainly listen to bass-heavy music.</p>
+        <div class="pc">
+          <div class="pros"><h3>Pros</h3><ul><li>Only 4 g per bud</li><li>Four-mic call clarity</li><li>Connects to two devices at once</li></ul></div>
+          <div class="cons"><h3>Cons</h3><ul><li>Light bass</li><li>No companion app</li></ul></div>
+        </div>
+      </div>
+      <div class="deal">
+        <button class="coupon" type="button" data-code="AIRLITE10" aria-label="Show coupon code"><span class="code">AIRLITE10</span><span class="cover">SHOW CODE</span></button>
+        <span class="copied" aria-live="polite"></span>
+        <p class="store">at <a href="https://example.com" rel="nofollow sponsored noopener" target="_blank">Example.com</a></p>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="score">
+        <div class="logo">BRAND C</div>
+        <div class="stars" aria-hidden="true">★★★★★</div>
+        <div class="rating">4.4 out of 5 (210 reviews)</div>
+      </div>
+      <div>
+        <h2>#3 - Brand C Bass Pro</h2>
+        <p class="desc">If you want punchy bass on a tight budget, this is the one. Noise cancellation is basic but noticeably helps on buses and trains.</p>
+        <div class="pc">
+          <div class="pros"><h3>Pros</h3><ul><li>Strong, deep bass</li><li>Basic active noise cancellation</li><li>IPX5 sweat resistance</li></ul></div>
+          <div class="cons"><h3>Cons</h3><ul><li>Bulky case</li><li>Mids can sound muddy</li><li>Average call quality</li></ul></div>
+        </div>
+      </div>
+      <div class="deal">
+        <button class="coupon" type="button" data-code="BASS200" aria-label="Show coupon code"><span class="code">BASS200</span><span class="cover">SHOW CODE</span></button>
+        <span class="copied" aria-live="polite"></span>
+        <p class="store">at <a href="https://example.com" rel="nofollow sponsored noopener" target="_blank">Example.com</a></p>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="score">
+        <div class="logo">BRAND D</div>
+        <div class="stars" aria-hidden="true">★★★★☆</div>
+        <div class="rating">4.2 out of 5 (74 reviews)</div>
+      </div>
+      <div>
+        <h2>#4 - Brand D Sport Fit</h2>
+        <p class="desc">Ear hooks keep these in place during runs and gym sessions. They are the most secure pair we tried, though the hooks get in the way with glasses.</p>
+        <div class="pc">
+          <div class="pros"><h3>Pros</h3><ul><li>Stays put during workouts</li><li>IPX7 water resistance</li><li>Physical buttons</li></ul></div>
+          <div class="cons"><h3>Cons</h3><ul><li>Awkward with glasses</li><li>Large case</li><li>Shorter battery life</li></ul></div>
+        </div>
+      </div>
+      <div class="deal">
+        <button class="coupon" type="button" data-code="SPORTFIT5" aria-label="Show coupon code"><span class="code">SPORTFIT5</span><span class="cover">SHOW CODE</span></button>
+        <span class="copied" aria-live="polite"></span>
+        <p class="store">at <a href="https://example.com" rel="nofollow sponsored noopener" target="_blank">Example.com</a></p>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="score">
+        <div class="logo">BRAND E</div>
+        <div class="stars" aria-hidden="true">★★★★☆</div>
+        <div class="rating">4.0 out of 5 (52 reviews)</div>
+      </div>
+      <div>
+        <h2>#5 - Brand E Mini</h2>
+        <p class="desc">The cheapest pair on the list and a sensible backup or first pair. Sound is clear enough for podcasts and calls, but music lacks detail.</p>
+        <div class="pc">
+          <div class="pros"><h3>Pros</h3><ul><li>Lowest price here</li><li>Pocket-sized case</li><li>Quick pairing</li></ul></div>
+          <div class="cons"><h3>Cons</h3><ul><li>Flat, thin sound</li><li>No water resistance</li><li>Micro-USB charging</li></ul></div>
+        </div>
+      </div>
+      <div class="deal">
+        <button class="coupon" type="button" data-code="MINI50" aria-label="Show coupon code"><span class="code">MINI50</span><span class="cover">SHOW CODE</span></button>
+        <span class="copied" aria-live="polite"></span>
+        <p class="store">at <a href="https://example.com" rel="nofollow sponsored noopener" target="_blank">Example.com</a></p>
+      </div>
+    </article>
+  </main>
+
+  <section class="faq">
+    <div class="wrap">
+      <h2>Frequently Asked Questions</h2>
+      <details open>
+        <summary>How do you rank these earbuds?</summary>
+        <p>We score sound, battery life, comfort, call quality and value, then weight value most heavily because this list is for budget buyers.</p>
+      </details>
+      <details>
+        <summary>Do the coupon codes always work?</summary>
+        <p>Codes are checked when the page is updated, but stores can end offers early. If a code fails, the store price is usually still the best available.</p>
+      </details>
+      <details>
+        <summary>Do you earn money from these links?</summary>
+        <p>Some links are affiliate links, so we may earn a small commission at no extra cost to you. It never affects the ranking.</p>
+      </details>
+    </div>
+  </section>
+
+  <section class="team wrap">
+    <h2>Our Reviewers</h2>
+    <div class="people">
+      <div class="person"><span class="avatar" style="background:#ff5a1f">R1</span><div><b>Reviewer One</b><span>Audio editor</span></div></div>
+      <div class="person"><span class="avatar" style="background:#2e9e5b">R2</span><div><b>Reviewer Two</b><span>Deals analyst</span></div></div>
+      <div class="person"><span class="avatar" style="background:#2563eb">R3</span><div><b>Reviewer Three</b><span>Gadgets writer</span></div></div>
+    </div>
+  </section>
+
+  <footer class="wrap">© 2026 Top5Picks. All rights reserved.</footer>
+
+  <script>
+    // "Show code": slide the cover away to reveal the code and copy it.
+    document.querySelectorAll('.coupon').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        btn.classList.add('revealed');
+        const note = btn.parentElement.querySelector('.copied');
+        try {
+          await navigator.clipboard.writeText(btn.dataset.code);
+          note.textContent = 'Code copied';
+        } catch {
+          note.textContent = 'Use code ' + btn.dataset.code;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
