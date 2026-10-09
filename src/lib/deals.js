@@ -1,6 +1,7 @@
 import sample from '../data/deals.json';
 import { apiGet, fetchDeals, fetchLive } from './api.js';
 import { pickLink } from './links.js';
+import { markSampleData } from './buildinfo.js';
 
 const THUMBS = (process.env.THUMBS || import.meta.env?.THUMBS || '').replace(/\/$/, '');
 
@@ -54,6 +55,7 @@ export async function getDeals({ sort = 'new', tag, perPage = 24, page = 1 } = {
     return data.map((d) => fromApi(d, now));
   } catch (err) {
     console.warn(`[deals] API fetch failed (${err.message}); using sample data`);
+    markSampleData();
     return sample;
   }
 }

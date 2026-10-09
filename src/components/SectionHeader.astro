@@ -1,9 +1,19 @@
 ---
 import Icon from './Icon.astro';
+import { BUILT_AT, builtAtIst, dataStatus } from '../lib/buildinfo.js';
 const { title, pane, notify = false, toggle = true } = Astro.props;
 ---
 <div class="sh card">
-  <h1>{title}</h1>
+  <div class="titles">
+    <h1>{title}</h1>
+    {dataStatus.live ? (
+      <p class="updated" data-ts={BUILT_AT.toISOString()}>
+        Updated {builtAtIst}<span class="rel"></span>
+      </p>
+    ) : (
+      <p class="updated stale">Showing sample deals (live data unavailable)</p>
+    )}
+  </div>
   {notify && <a class="notify" href="#">NOTIFY</a>}
   {toggle && (
     <button class="view-toggle" data-pane={pane} aria-label="Switch between list and grid view" title="Switch view">
@@ -13,10 +23,26 @@ const { title, pane, notify = false, toggle = true } = Astro.props;
   )}
 </div>
 
+<script is:inline>
+  // Show how long ago the data was fetched, e.g. " · 12 mins ago", and keep it current.
+  (() => {
+    const fmt = (m) => (m < 1 ? 'just now' : m < 60 ? `${m} min${m > 1 ? 's' : ''} ago` : m < 1440 ? `${Math.floor(m / 60)} hr${m >= 120 ? 's' : ''} ago` : `${Math.floor(m / 1440)} day${m >= 2880 ? 's' : ''} ago`);
+    const tick = () => document.querySelectorAll('.updated[data-ts]').forEach((el) => {
+      const mins = Math.floor((Date.now() - Date.parse(el.dataset.ts)) / 60000);
+      el.querySelector('.rel').textContent = ` · ${fmt(mins)}`;
+    });
+    tick();
+    setInterval(tick, 60000);
+  })();
+</script>
+
 <style>
-  .sh { display: flex; align-items: center; justify-content: space-between; height: 50px; padding: 0 20px; }
+  .sh { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; padding: 6px 20px; }
   .notify { margin-left: auto; margin-right: 12px; color: var(--primary-color); font-size: 14px; font-weight: 500; letter-spacing: 0.3px; }
-  h1 { margin: 0; font-size: 17px; font-weight: 400; color: var(--text-color); }
+  .titles { min-width: 0; }
+  h1 { margin: 0; font-size: 17px; line-height: 22px; font-weight: 400; color: var(--text-color); }
+  .updated { margin: 1px 0 0; font-size: 12px; line-height: 16px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .updated.stale { color: var(--badge-color); }
   .view-toggle { border: 0; background: none; font-size: 24px; color: var(--muted); padding: 4px; cursor: pointer; display: grid; }
   /* Show the icon for the view you would switch to. */
   .to-list { display: none; }

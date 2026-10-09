@@ -4,9 +4,13 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  # Rebuild regularly so the home page picks up new deals from the API.
+  # Rebuild every 30 minutes from 08:00 to 00:30 IST so the pages pick up new
+  # deals; no scheduled builds 01:00-07:59 IST, when few deals are posted.
+  # GitHub cron is UTC (IST = UTC+5:30).
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '30 2 * * *'       # 08:00 IST
+    - cron: '0,30 3-18 * * *'  # 08:30 - 00:00 IST
+    - cron: '0 19 * * *'       # 00:30 IST (last run of the night)
 
 permissions:
   contents: read
