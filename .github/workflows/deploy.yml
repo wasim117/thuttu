@@ -4,14 +4,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  # Rebuild every 30 minutes from about 08:00 to 00:45 IST so the pages pick up
-  # new deals; no scheduled builds 01:00-07:59 IST, when few deals are posted.
-  # GitHub cron is UTC (IST = UTC+5:30). Minutes :12/:42 avoid the top and
-  # half of the hour, when GitHub most often delays or drops scheduled runs.
-  schedule:
-    - cron: '42 2 * * *'        # 08:12 IST
-    - cron: '12,42 3-18 * * *'  # 08:42 - 00:12 IST
-    - cron: '12 19 * * *'       # 00:42 IST (last run of the night)
+  # Scheduled rebuilds come from an external cron service that calls the
+  # workflow_dispatch API (POST /repos/wasim117/thuttu/actions/workflows/
+  # deploy.yml/dispatches). GitHub's own `schedule:` trigger was removed
+  # because it was delaying or dropping runs.
 
 permissions:
   contents: read
