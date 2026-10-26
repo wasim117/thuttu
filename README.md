@@ -8,7 +8,7 @@ A static deals site built with [Astro](https://astro.build). The MVP is the home
 
 ```sh
 npm install
-npm run dev      # http://localhost:4321/thuttu/
+npm run dev      # http://localhost:4321/
 npm run build    # outputs to dist/
 ```
 
