@@ -6,13 +6,10 @@ import BottomNav from './BottomNav.astro';
 import Banner from './Banner.astro';
 import SectionHeader from './SectionHeader.astro';
 import DealCard from './DealCard.astro';
-import DiscoverTags from './DiscoverTags.astro';
 import Sidebar from './Sidebar.astro';
-import discover from '../data/discover.json';
 
 const { title, heading, active, deals, updates, banner, notify = false } = Astro.props;
 const pane = `nav-${active.toLowerCase()}`;
-const tagSets = [discover.tags.slice(0, 9), discover.tags.slice(3)];
 ---
 <Base title={title}>
   <Header active={active} />
@@ -22,12 +19,9 @@ const tagSets = [discover.tags.slice(0, 9), discover.tags.slice(3)];
       <SectionHeader title={heading} pane={pane} notify={notify} />
       <div id={pane} class="navpane list">
         {deals.map((d, i) => <div class="cell" style={`order:${i * 2}`}><DealCard deal={d} eager={i < 6} /></div>)}
-        {tagSets.map((tags, k) => (
-          <div class="break" style={`--k:${k + 1}`}><DiscoverTags tags={tags} /></div>
-        ))}
       </div>
     </main>
-    <Sidebar links={discover.sidebar} updates={updates} />
+    <Sidebar updates={updates} />
   </div>
   <BottomNav active={active} />
 
@@ -58,6 +52,4 @@ const tagSets = [discover.tags.slice(0, 9), discover.tags.slice(3)];
   .navpane.list { --cols: var(--list-n); }
   .navpane.grid { --cols: var(--grid-n); }
   .cell { min-width: 0; }
-  /* "Discover more" spans the row after every two rows of deals (at least 3 deals). */
-  .break { grid-column: 1 / -1; order: calc(max(var(--cols) * 2, 3) * 2 * var(--k) - 1); }
 </style>

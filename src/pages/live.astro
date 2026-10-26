@@ -6,7 +6,6 @@ import SectionHeader from '../components/SectionHeader.astro';
 import LiveItem from '../components/LiveItem.astro';
 import Sidebar from '../components/Sidebar.astro';
 import site from '../data/site.json';
-import discover from '../data/discover.json';
 import { getLive, getRecentSearches } from '../lib/deals.js';
 
 const [entries, searches] = await Promise.all([getLive({ pages: 3 }), getRecentSearches()]);
@@ -15,20 +14,47 @@ const [entries, searches] = await Promise.all([getLive({ pages: 3 }), getRecentS
   <Header active="Live" />
   <div class="page">
     <main class="main">
-      <SectionHeader title="Live Updates" toggle={false} />
-      <div class="feed">
+      <SectionHeader title="Live Updates" pane="nav-live" />
+      <div id="nav-live" class="feed list">
         {entries.map((e) => (
           <div class="entry card"><LiveItem deal={e.deal} label={e.label} minsAgo={e.minsAgo} /></div>
         ))}
       </div>
     </main>
-    <Sidebar links={discover.sidebar} searches={searches} />
+    <Sidebar searches={searches} />
   </div>
   <BottomNav active="Live" />
+
+  <script is:inline>
+    (() => {
+      const root = document.documentElement;
+      const apply = (view) => {
+        root.dataset.view = view;
+        const feed = document.querySelector('.feed');
+        if (!feed) return;
+        feed.classList.remove('list', 'grid');
+        feed.classList.add(view);
+      };
+      apply(root.dataset.view || 'list');
+      document.querySelectorAll('.view-toggle').forEach((btn) =>
+        btn.addEventListener('click', () => {
+          const next = root.dataset.view === 'grid' ? 'list' : 'grid';
+          apply(next);
+          try { localStorage.setItem('thuttu:view', next); } catch {}
+        }),
+      );
+    })();
+  </script>
 </Base>
 
 <style>
-  .feed { display: grid; gap: 10px; grid-template-columns: repeat(var(--list-n), minmax(0, 1fr)); }
+  .feed { display: grid; gap: 10px; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); }
+  .feed.list { --cols: var(--list-n); }
+  .feed.grid { --cols: var(--grid-n); }
   .entry { padding: 0 10px 6px; }
   .entry :global(small) { margin-left: -10px; background: var(--bg-color); }
+  .feed.grid .entry { padding-bottom: 10px; }
+  .feed.grid .entry :global(.row) { flex-direction: column; gap: 8px; padding: 0; }
+  .feed.grid .entry :global(img) { width: 100%; height: auto; aspect-ratio: 1; }
+  .feed.grid .entry :global(.nums) { flex-wrap: wrap; column-gap: 8px; row-gap: 4px; }
 </style>
