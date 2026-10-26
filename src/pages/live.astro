@@ -55,6 +55,7 @@ const [entries, searches] = await Promise.all([getLive({ pages: 3 }), getRecentS
   .entry :global(small) { margin-left: -10px; background: var(--bg-color); }
   .feed.grid .entry { padding-bottom: 10px; }
   .feed.grid .entry :global(.row) { flex-direction: column; gap: 8px; padding: 0; }
-  .feed.grid .entry :global(img) { width: 100%; height: auto; aspect-ratio: 1; }
+  .feed.grid .entry :global(img:not(.store)) { width: 100%; height: auto; aspect-ratio: 1; }
+  .feed.grid .entry :global(.store) { flex: none; width: 25px; height: 25px; }
   .feed.grid .entry :global(.nums) { flex-wrap: wrap; column-gap: 8px; row-gap: 4px; }
 </style>
